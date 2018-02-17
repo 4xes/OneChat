@@ -2,9 +2,9 @@ package com.eor.onechat
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.android.kit.base.BaseActivity
 import com.android.kit.extensions.toast
 
 import com.squareup.picasso.Picasso
@@ -17,11 +17,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-abstract class BaseMessagesActivity : AppCompatActivity(), MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
+abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
 
     protected val senderId = "0"
     protected lateinit var imageLoader: ImageLoader
-    protected var messagesAdapter: MessagesListAdapter<Message>? = null
+    protected lateinit var messagesAdapter: MessagesListAdapter<Message>
 
     private var menu: Menu? = null
     private var selectionCount: Int = 0
@@ -42,7 +42,7 @@ abstract class BaseMessagesActivity : AppCompatActivity(), MessagesListAdapter.S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        imageLoader = ImageLoader { imageView, url -> Picasso.with(this@BaseMessagesActivity).load(url).into(imageView) }
+        imageLoader = ImageLoader { imageView, url -> Picasso.with(this).load(url).into(imageView) }
     }
 
     override fun onStart() {
@@ -88,17 +88,17 @@ abstract class BaseMessagesActivity : AppCompatActivity(), MessagesListAdapter.S
         menu!!.findItem(R.id.action_copy).isVisible = count > 0
     }
 
-    protected fun loadMessages() {
+    private fun loadMessages() {
         Handler().postDelayed(//imitation of internet connection
         {
             val messages = MockMessagesFabric.getMessages(lastLoadedDate)
             lastLoadedDate = messages[messages.size - 1].createdAt
-            messagesAdapter!!.addToEnd(messages, false)
+            messagesAdapter.addToEnd(messages, false)
         }, 1000)
     }
 
     companion object {
 
-        private val TOTAL_MESSAGES_COUNT = 100
+        private const val TOTAL_MESSAGES_COUNT = 100
     }
 }

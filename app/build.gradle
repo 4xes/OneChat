@@ -15,6 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -66,7 +67,8 @@ dependencies {
     implementation "com.squareup.picasso:picasso:$picassoVersion"
     implementation "de.hdodenhof:circleimageview:$circleImageViewVersion"
     implementation "com.github.siyamed:android-shape-imageview:$shapeImageViewVersion"
-    compile "me.relex:circleindicator:$circleIndicatorVersion"
+    implementation "me.relex:circleindicator:$circleIndicatorVersion"
+    implementation 'com.github.kobakei:MaterialFabSpeedDial:master-SNAPSHOT'
 
     // Networks
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"

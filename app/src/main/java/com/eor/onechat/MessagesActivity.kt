@@ -3,15 +3,15 @@ package com.eor.onechat
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-
-import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.messages.MessageInput
-import com.stfalcon.chatkit.messages.MessagesList
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.eor.onechat.data.mock.MockMessagesFabric
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.holders.InVoiceMessageViewHolder
 import com.eor.onechat.holders.OutVoiceMessageViewHolder
+import com.stfalcon.chatkit.messages.MessageHolders
+import com.stfalcon.chatkit.messages.MessageInput
+import com.stfalcon.chatkit.messages.MessagesList
+import com.stfalcon.chatkit.messages.MessagesListAdapter
+import kotlinx.android.synthetic.main.activity_messages.*
 
 class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener {
 
@@ -20,7 +20,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.messages_activity)
+        setContentView(R.layout.activity_messages)
+        setSupportActionBar(toolbar)
 
         this.messagesList = findViewById(R.id.messagesList)
         initAdapter()
@@ -31,7 +32,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
-        super.messagesAdapter!!.addToStart(
+        super.messagesAdapter.addToStart(
                 MockMessagesFabric.getTextMessage(input.toString()), true)
         return true
     }
@@ -51,8 +52,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
         when (i) {
-            0 -> messagesAdapter!!.addToStart(MockMessagesFabric.imageMessage, true)
-            1 -> messagesAdapter!!.addToStart(MockMessagesFabric.voiceMessage, true)
+            0 -> messagesAdapter.addToStart(MockMessagesFabric.imageMessage, true)
+            1 -> messagesAdapter.addToStart(MockMessagesFabric.voiceMessage, true)
         }
     }
 
@@ -67,9 +68,9 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
                         this)
 
 
-        super.messagesAdapter = MessagesListAdapter(super.senderId, holders, super.imageLoader)
-        super.messagesAdapter!!.enableSelectionMode(this)
-        super.messagesAdapter!!.setLoadMoreListener(this)
+        messagesAdapter = MessagesListAdapter(super.senderId, holders, super.imageLoader)
+        messagesAdapter.enableSelectionMode(this)
+        messagesAdapter.setLoadMoreListener(this)
         this.messagesList!!.setAdapter(super.messagesAdapter)
     }
 

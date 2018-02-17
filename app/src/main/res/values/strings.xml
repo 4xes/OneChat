@@ -1,15 +1,14 @@
 <resources>
-    <string name="app_name">ChatKit</string>
-    <string name="sample_title">ChatKit for Android</string>
+    <string name="app_name">EORA</string>
 
     <string name="view">View</string>
 
 
-    <string name="hint_enter_a_message">Type a message…</string>
+    <string name="hint_enter_a_message">Написать приложение…</string>
     <string name="on_log_click_message">Your custom long click handler</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_copy">Copy</string>
-    <string name="copied_message">Message copied!</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_copy">Скопировать</string>
+    <string name="copied_message">Сообщение скопировано!</string>
 
     <string name="date_header_today">Today</string>
     <string name="date_header_yesterday">Yesterday</string>
@@ -23,5 +22,14 @@
     <string name="pref_speakerphone_title">Speakerphone.</string>
     <string name="pref_speakerphone_dlg">Speakerphone.</string>
     <string name="pref_speakerphone_default">auto</string>
+
+    <string name="action_fab_balance">Баланс</string>
+    <string name="action_fab_transfer">Перевод</string>
+    <string name="action_fab_consultation">Консультация с сотрудником</string>
+    <string name="action_fab_block_card">Блокировка Карты</string>
+    <string name="action_fab_history_payment">История Платежей</string>
+    <string name="action_fab_near_atm">Ближайший банкомат</string>
+    <string name="action_fab_currency">Курс Валют</string>
+    <string name="action_fab_credits">Кредиты</string>
 
 </resources>
