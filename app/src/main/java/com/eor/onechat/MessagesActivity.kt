@@ -3,8 +3,10 @@ package com.eor.onechat
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import com.eor.onechat.data.mock.MockData
 import com.eor.onechat.data.mock.MockMessagesFabric
 import com.eor.onechat.data.model.Message
+import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.InTextMessageViewHolder
 import com.eor.onechat.holders.OutTextMessageViewHolder
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -32,8 +34,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
-        super.messagesAdapter.addToStart(
-                MockMessagesFabric.getTextMessage(input.toString()), true)
+        super.messagesAdapter.addToStart(Message(MockData.randomId, User.ME, input.toString()), true)
         return true
     }
 
@@ -70,7 +71,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 //                        this)
 
 
-        messagesAdapter = MessagesListAdapter(super.senderId, holders, super.imageLoader)
+        messagesAdapter = MessagesListAdapter(User.ME_ID, holders, super.imageLoader)
         messagesAdapter.enableSelectionMode(this)
         messagesAdapter.setLoadMoreListener(this)
 
