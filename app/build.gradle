@@ -22,6 +22,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 kapt {
@@ -41,6 +45,7 @@ def daggerVersion = '2.11'
 def rxJavaVersion = '2.1.0'
 def rxAndroidVersion = '2.0.1'
 def annotationVersion = '10.0-b28'
+def okHttpVersion = '3.9.1'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -80,4 +85,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    compile 'com.jakewharton.timber:timber:4.6.0'
+    implementation 'org.webrtc:google-webrtc:1.0.20723'
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: "$okHttpVersion"
 }
