@@ -59,6 +59,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
     private fun initAdapter() {
         val holders = MessageHolders()
+                .setIncomingTextLayout(R.layout.item_custom_incoming_text_message)
+                .setOutcomingTextLayout(R.layout.item_custom_outcoming_text_message)
                 .registerContentType(
                         CONTENT_TYPE_VOICE,
                         InVoiceMessageViewHolder::class.java,

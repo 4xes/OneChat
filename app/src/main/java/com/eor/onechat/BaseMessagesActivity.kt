@@ -1,21 +1,17 @@
 package com.eor.onechat
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import com.android.kit.base.BaseActivity
 import com.android.kit.extensions.toast
-
+import com.eor.onechat.data.mock.MockMessagesFabric
+import com.eor.onechat.data.model.Message
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesListAdapter
-import com.eor.onechat.data.mock.MockMessagesFabric
-import com.eor.onechat.data.model.Message
-
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
 
@@ -72,7 +68,7 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
         if (selectionCount == 0) {
             super.onBackPressed()
         } else {
-            messagesAdapter!!.unselectAllItems()
+            messagesAdapter.unselectAllItems()
         }
     }
 
@@ -89,12 +85,9 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
     }
 
     private fun loadMessages() {
-        Handler().postDelayed(//imitation of internet connection
-        {
-            val messages = MockMessagesFabric.getMessages(lastLoadedDate)
-            lastLoadedDate = messages[messages.size - 1].createdAt
-            messagesAdapter.addToEnd(messages, false)
-        }, 1000)
+        val messages = MockMessagesFabric.getMessages(lastLoadedDate)
+        lastLoadedDate = messages[messages.size - 1].createdAt
+        messagesAdapter.addToEnd(messages, false)
     }
 
     companion object {
