@@ -18,4 +18,13 @@
         <item name="voice">Voice message (custom)</item>
     </string-array>
 
+    <string name="action_fab_balance">Баланс</string>
+    <string name="action_fab_transfer">Перевод</string>
+    <string name="action_fab_consultation">Консультация с сотрудником</string>
+    <string name="action_fab_block_card">Блокировка Карты</string>
+    <string name="action_fab_history_payment">История Платежей</string>
+    <string name="action_fab_near_atm">Ближайший банкомат</string>
+    <string name="action_fab_currency">Курс Валют</string>
+    <string name="action_fab_credits">Кредиты</string>
+
 </resources>

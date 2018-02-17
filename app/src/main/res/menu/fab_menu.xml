@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_fab_transfer"
+        android:icon="@drawable/ic_fab_transfer_money"
+        android:title="@string/action_fab_transfer" />
+
+    <item
+        android:id="@+id/action_fab_balance"
+        android:icon="@drawable/ic_fab_balance"
+        android:title="@string/action_fab_balance" />
+
+    <item
+        android:id="@+id/action_fab_consultation"
+        android:icon="@drawable/ic_fab_consultation"
+        android:title="@string/action_fab_consultation" />
+
+    <item
+        android:id="@+id/action_fab_block_card"
+        android:icon="@drawable/ic_fab_block"
+        android:title="@string/action_fab_block_card" />
+
+    <item
+        android:id="@+id/action_fab_history_payment"
+        android:icon="@drawable/ic_fab_history"
+        android:title="@string/action_fab_history_payment" />
+
+    <item
+        android:id="@+id/action_fab_near_atm"
+        android:icon="@drawable/ic_fab_atm"
+        android:title="@string/action_fab_near_atm" />
+
+    <item
+        android:id="@+id/action_fab_currency"
+        android:icon="@drawable/ic_fab_currency"
+        android:title="@string/action_fab_currency" />
+
+    <item
+        android:id="@+id/action_fab_credits"
+        android:icon="@drawable/ic_fab_credits"
+        android:title="@string/action_fab_credits" />
+
+</menu>

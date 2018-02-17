@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white"
     android:paddingStart="@dimen/normal"
-    android:paddingEnd="@dimen/normal"
+    android:paddingEnd="@dimen/fab_width"
     android:paddingTop="@dimen/medium"
     android:paddingBottom="@dimen/medium"
     android:orientation="horizontal"
@@ -29,11 +29,6 @@
             app:srcCompat="@drawable/ic_camera"/>
     </FrameLayout>
 
-    <FrameLayout style="@style/Action.Wrapper">
-        <ImageView
-            style="@style/Action.Icon"
-            app:srcCompat="@drawable/ic_image"/>
-    </FrameLayout>
 
     <FrameLayout style="@style/Action.Wrapper">
         <ImageView

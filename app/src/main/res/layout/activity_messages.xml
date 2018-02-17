@@ -1,33 +1,76 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chat_background">
+    tools:context=".MessagesActivity">
 
-    <com.stfalcon.chatkit.messages.MessagesList
-        android:id="@+id/messagesList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/actions"/>
-
-
-    <include layout="@layout/layout_actions"
-        android:id="@+id/actions"
-        android:layout_above="@+id/input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <com.stfalcon.chatkit.messages.MessageInput
-        android:id="@+id/input"
-        android:background="@android:color/white"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:inputHint="@string/hint_enter_a_message"
-        app:inputBackground="@null"
-        app:inputButtonBackground="@color/transparent"
-        app:inputButtonIcon="@drawable/ic_chat_send"
-        app:showAttachmentButton="false"/>
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-</RelativeLayout>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/chat_background">
+
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:id="@+id/messagesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/actions" />
+
+
+        <View
+            android:id="@+id/space"
+            android:layout_above="@+id/actions"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/normal" />
+
+        <include
+            android:id="@+id/actions"
+            layout="@layout/layout_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/input" />
+
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
+            app:inputBackground="@null"
+            app:inputButtonBackground="@color/transparent"
+            app:inputButtonIcon="@drawable/ic_chat_send"
+            app:inputHint="@string/hint_enter_a_message"
+            app:showAttachmentButton="false" />
+
+    </RelativeLayout>
+
+    <io.github.kobakei.materialfabspeeddial.FabSpeedDial
+        android:id="@+id/fab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fab_fabDrawable="@drawable/ic_app_bar_logo"
+        app:fab_miniFabTextColor="@android:color/black"
+        app:fab_miniFabTextBackground="@android:color/white"
+        app:fab_extraMargin="-12dp"
+        app:fab_fabRotationAngle="0"
+        app:layout_anchor="@id/actions"
+        app:useCompatPadding="true"
+        app:layout_anchorGravity="top"
+        app:fab_menu="@menu/fab_menu" />
+
+</android.support.design.widget.CoordinatorLayout>
