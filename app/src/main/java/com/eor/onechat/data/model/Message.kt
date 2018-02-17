@@ -45,7 +45,4 @@ class Message @JvmOverloads constructor(private val id: String, private val user
         this.image = image
     }
 
-    class Image(val url: String)
-
-    class Voice(val url: String, val duration: Long)
 }

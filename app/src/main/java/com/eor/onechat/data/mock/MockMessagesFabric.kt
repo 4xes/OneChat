@@ -1,7 +1,9 @@
 package com.eor.onechat.data.mock
 
+import com.eor.onechat.data.model.Image
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.User
+import com.eor.onechat.data.model.Voice
 
 import java.util.ArrayList
 import java.util.Calendar
@@ -11,14 +13,14 @@ object MockMessagesFabric {
     val imageMessage: Message
         get() {
             val message = Message(MockData.randomId, user, null)
-            message.setImage(Message.Image(MockData.randomImage))
+            message.setImage(Image(MockData.randomImage))
             return message
         }
 
     val voiceMessage: Message
         get() {
             val message = Message(MockData.randomId, user, null)
-            message.voice = Message.Voice("http://example.com", (MockData.rnd.nextInt(200) + 30).toLong())
+            message.voice = Voice("http://example.com", (MockData.rnd.nextInt(200) + 30).toLong())
             return message
         }
 

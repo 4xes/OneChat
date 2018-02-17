@@ -3,28 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/chat_background">
 
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/input"/>
+        android:layout_above="@+id/actions"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
+
+    <include layout="@layout/layout_actions"
+        android:id="@+id/actions"
         android:layout_above="@+id/input"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/gray_light"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/input"
+        android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:inputHint="@string/hint_enter_a_message"
-        app:showAttachmentButton="true"/>
+        app:inputBackground="@null"
+        app:inputButtonBackground="@color/transparent"
+        app:inputButtonIcon="@drawable/ic_chat_send"
+        app:showAttachmentButton="false"/>
 
 </RelativeLayout>

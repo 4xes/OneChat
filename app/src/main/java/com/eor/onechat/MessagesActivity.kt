@@ -20,7 +20,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.messages_activity)
+        setContentView(R.layout.activity_messages)
 
         this.messagesList = findViewById(R.id.messagesList)
         initAdapter()
@@ -67,9 +67,9 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
                         this)
 
 
-        super.messagesAdapter = MessagesListAdapter(super.senderId, holders, super.imageLoader)
-        super.messagesAdapter!!.enableSelectionMode(this)
-        super.messagesAdapter!!.setLoadMoreListener(this)
+        messagesAdapter = MessagesListAdapter(super.senderId, holders, super.imageLoader)
+        messagesAdapter.enableSelectionMode(this)
+        messagesAdapter.setLoadMoreListener(this)
         this.messagesList!!.setAdapter(super.messagesAdapter)
     }
 

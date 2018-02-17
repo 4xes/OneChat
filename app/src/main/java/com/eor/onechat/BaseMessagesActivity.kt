@@ -21,7 +21,7 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
 
     protected val senderId = "0"
     protected lateinit var imageLoader: ImageLoader
-    protected var messagesAdapter: MessagesListAdapter<Message>? = null
+    protected lateinit var messagesAdapter: MessagesListAdapter<Message>
 
     private var menu: Menu? = null
     private var selectionCount: Int = 0
@@ -93,7 +93,7 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
         {
             val messages = MockMessagesFabric.getMessages(lastLoadedDate)
             lastLoadedDate = messages[messages.size - 1].createdAt
-            messagesAdapter!!.addToEnd(messages, false)
+            messagesAdapter.addToEnd(messages, false)
         }, 1000)
     }
 
