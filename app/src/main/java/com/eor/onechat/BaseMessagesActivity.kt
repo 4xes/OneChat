@@ -43,7 +43,7 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
 
     override fun onStart() {
         super.onStart()
-        messagesAdapter!!.addToStart(MockMessagesFabric.textMessage, true)
+        messagesAdapter.addToStart(MockMessagesFabric.textMessage, true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -57,7 +57,7 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
         when (item.itemId) {
             R.id.action_delete -> messagesAdapter!!.deleteSelectedMessages()
             R.id.action_copy -> {
-                messagesAdapter!!.copySelectedMessagesText(this, messageStringFormatter, true)
+                messagesAdapter.copySelectedMessagesText(this, messageStringFormatter, true)
                 toast(R.string.copied_message)
             }
         }

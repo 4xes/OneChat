@@ -29,14 +29,22 @@
             android:id="@+id/messagesList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/white"
+            app:incomingTextColor="@color/chat_message_text"
+            app:outcomingTextColor="@color/chat_message_text"
+            app:outcomingDefaultBubbleColor="#B8E986"
+            app:incomingDefaultBubbleColor="#F6F5F3"
+            app:dateHeaderTextColor="@color/transparent"
             android:layout_above="@+id/actions" />
-
 
         <View
             android:id="@+id/space"
             android:layout_above="@+id/actions"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/normal" />
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/normal"
+            android:layout_marginEnd="@dimen/normal"
+            android:background="#00000033" />
 
         <include
             android:id="@+id/actions"
