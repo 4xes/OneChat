@@ -4,8 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.calls.Permissions
 import com.eor.onechat.chat.ChatView
@@ -13,10 +11,7 @@ import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.Place
 import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.*
-import com.eor.onechat.net.Auth
-import com.eor.onechat.net.Proto
-import com.eor.onechat.net.ServerResponse
-import com.eor.onechat.net.WebSocketClient
+import com.eor.onechat.net.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.stfalcon.chatkit.messages.MessageHolders
@@ -33,6 +28,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     private lateinit var messagesList: MessagesList
     private lateinit var webSocketClient: WebSocketClient
     private var auth: Auth? = null
+    private var chatId: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,23 +44,24 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         input.setInputListener(this)
         input.setAttachmentsListener(this)
 
-        webSocketClient = WebSocketClient(this)
+        val app = (application as ExtendedApplication)
+        webSocketClient = app.webSocketClient!!
+        auth = app.auth
 
-        val authResponse = ServerResponse { jsonObject ->
+        val listResponse = ServerResponse { jsonObject ->
             val gson = Gson()
-            val authResponse = gson.fromJson(jsonObject, Auth::class.java)
-            if (authResponse.result == 1) {
-                auth = authResponse
-                Timber.d("auth succeed, userId %s", authResponse.userId)
+            val listChats = gson.fromJson(jsonObject, ListChats::class.java)
+            if (listChats.chatIds != null && listChats.chatIds.isNotEmpty()) {
+                Timber.e("${listChats.chatIds}")
+                chatId = listChats.chatIds[0]
             } else {
-                Timber.d("auth failed")
+                Timber.e("can't get list")
             }
         }
 
-        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        val authReq = Auth(androidId, "Robot Androidovich")
 
-        webSocketClient.send(Proto.Method.AUTH, authReq, authResponse)
+
+        webSocketClient.send(Proto.Method.CHAT_GET_LIST, auth, listResponse)
 
         action_call.setOnClickListener {
             var intent = Intent(this, CallActivity::class.java)
@@ -89,10 +87,22 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     }
 
     override fun onDirect(dataJson: JsonObject?) {
-        Log.d("TAG", dataJson?.asString ?: "")
+        Timber.d(dataJson?.asString ?: "")
     }
 
+
     override fun onSubmit(input: CharSequence): Boolean {
+        webSocketClient.send(Proto.Method.CHAT_SEND_MESSAGE, Message(chatId
+                ?: "5A88F54971ADD835DE000011", input.toString())) { jsonObject ->
+            Timber.e(jsonObject?.asString)
+            val gson = Gson()
+            val messageSend = gson.fromJson(jsonObject, MessageSend::class.java)
+            if (messageSend.message_id != null) {
+                Timber.e(messageSend.message_id)
+            } else {
+                Timber.e("can't send message")
+            }
+        }
         messagesAdapter.addToStart(Message.userMessage(input.toString()), true)
         return true
     }

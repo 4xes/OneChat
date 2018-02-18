@@ -19,7 +19,9 @@ public class Proto {
     public static enum Method {
         @SerializedName("auth") AUTH,
         @SerializedName("direct") DIRECT,
-        @SerializedName("receive") RECEIVE
+        @SerializedName("receive")RECEIVE,
+        @SerializedName("chat.getList")CHAT_GET_LIST,
+        @SerializedName("chat.sendMessage")CHAT_SEND_MESSAGE
      }
      public Proto(Method method, Object data) {
         this.uuid = UUID.randomUUID().toString();
