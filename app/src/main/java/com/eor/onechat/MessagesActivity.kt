@@ -39,6 +39,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
         action_call.setOnClickListener {
             var intent = Intent(this, CallActivity::class.java)
+            intent.setAction("OFFER")
             intent.putExtra(CallActivity.EXTRA_LOOPBACK, false)
             intent.putExtra(CallActivity.EXTRA_VIDEO_CALL, true)
             intent.putExtra(CallActivity.EXTRA_SCREENCAPTURE, false)

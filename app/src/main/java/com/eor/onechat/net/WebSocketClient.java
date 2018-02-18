@@ -74,9 +74,30 @@ public class WebSocketClient extends WebSocketListener {
         Proto proto = gson.fromJson(transport, Proto.class);
         ServerResponse callback = awaitingForResponse.get(proto.uuid);
 
-        if (proto.data != null && callback != null) {
+        if (proto.data != null) {
             JsonObject dataJson = transport.getAsJsonObject("data");
-            callback.onServerResponse(dataJson);
+            if (callback != null) {
+                callback.onServerResponse(dataJson);
+            } else {
+                switch (proto.method) {
+                    case RECEIVE: {
+                        Direct direct = gson.fromJson(dataJson, Direct.class);
+                        switch (direct.type) {
+                            case SDP:{
+                                break;
+                            }
+                            case CANDY:{
+                                break;
+                            }
+                            case BYE:{
+                                break;
+                            }
+                        }
+                        Timber.d("got DIRECT %s", direct.type.toString());
+                        break;
+                    }
+                }
+            }
         }
         Timber.d("received %s %s", proto.uuid, packet);
     }
