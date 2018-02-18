@@ -2,6 +2,7 @@ package com.eor.onechat.widgets
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import com.eor.onechat.R
 import com.eor.onechat.data.model.Data
@@ -31,8 +32,34 @@ class DataView : FrameLayout {
 
     fun bind(data: Data) {
         text.text = data.text
-        title.text = data.title
-        subtitle.text = data.subtitle
+
+        var hasTop = false
+        if (!data.text.isNullOrBlank()) {
+            text.text = data.text
+            text.visibility = View.VISIBLE
+            hasTop = true
+        } else {
+            text.visibility = View.GONE
+        }
+
+        var hasBottom = false
+        if (!data.title.isNullOrBlank()) {
+            title.text = data.title
+            title.visibility = View.VISIBLE
+            hasBottom = true
+        } else {
+            title.visibility = View.GONE
+        }
+
+        if (!data.subtitle.isNullOrBlank()) {
+            subtitle.text = data.subtitle
+            subtitle.visibility = View.VISIBLE
+            hasBottom = true
+        } else {
+            subtitle.visibility = View.GONE
+        }
+
+        divider.visibility = if (hasTop && hasBottom) View.VISIBLE else View.GONE
     }
 
 }

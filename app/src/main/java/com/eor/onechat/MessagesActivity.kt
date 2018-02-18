@@ -93,7 +93,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         messagesAdapter.addToStart(Message.botMessage("Привет"), true)
         messagesAdapter.addToStart(Message.userMessage("Привет"), true)
         messagesAdapter.addToStart(Message.gallery(), true)
-        messagesAdapter.addToStart(Message.data(), true)
+        messagesAdapter.addToStart(Message.dataFull(), true)
+        messagesAdapter.addToStart(Message.dataText(), true)
 
         messagesList.setAdapter(super.messagesAdapter)
         messagesList.drawingTime
