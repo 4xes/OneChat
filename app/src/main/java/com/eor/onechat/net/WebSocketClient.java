@@ -8,6 +8,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 
+import org.webrtc.IceCandidate;
+import org.webrtc.SessionDescription;
+
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -59,6 +63,7 @@ public class WebSocketClient extends WebSocketListener {
     private Auth authRes = null;
     private WebSocket webSocket = null;
     private ConcurrentHashMap<String, ServerResponse> awaitingForResponse = new ConcurrentHashMap();
+    private IDirect listener = null;
 
     public void send(Proto.Method method, Object object, ServerResponse callback) {
         String uuid = UUID.randomUUID().toString();
@@ -74,14 +79,28 @@ public class WebSocketClient extends WebSocketListener {
         Proto proto = gson.fromJson(transport, Proto.class);
         ServerResponse callback = awaitingForResponse.get(proto.uuid);
 
-        if (proto.data != null && callback != null) {
+        if (proto.data != null) {
             JsonObject dataJson = transport.getAsJsonObject("data");
-            callback.onServerResponse(dataJson);
+            if (callback != null) {
+                callback.onServerResponse(dataJson);
+            } else {
+                switch (proto.method) {
+                    case RECEIVE: {
+                        listener.onDirect(dataJson);
+                        break;
+                    }
+                }
+            }
         }
         Timber.d("received %s %s", proto.uuid, packet);
     }
 
-    public WebSocketClient() {
+    public interface IDirect {
+        void onDirect(JsonObject dataJson);
+    }
+
+    public WebSocketClient(IDirect listener) {
+        this.listener = listener;
         Timber.v("constructor");
         okHttpClient = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();

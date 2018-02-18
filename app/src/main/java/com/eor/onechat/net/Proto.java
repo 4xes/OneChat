@@ -1,5 +1,6 @@
 package com.eor.onechat.net;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.UUID;
@@ -12,6 +13,8 @@ public class Proto {
     @SerializedName("uuid") String uuid;
     @SerializedName("method") Method method;
     @SerializedName("data") Object data;
+    @Expose(serialize = false)
+    @SerializedName("from") public String from;
 
     public static enum Method {
         @SerializedName("auth") AUTH,
