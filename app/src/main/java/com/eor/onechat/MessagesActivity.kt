@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.User
+import com.eor.onechat.holders.DataMessageViewHolder
 import com.eor.onechat.holders.GalleryMessageViewHolder
 import com.eor.onechat.holders.InTextMessageViewHolder
 import com.eor.onechat.holders.OutTextMessageViewHolder
@@ -53,6 +54,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     override fun hasContentFor(message: Message, type: Byte): Boolean {
         when (type) {
             Message.CONTENT_PLACES -> return (message.places != null)
+            Message.CONTENT_DATA -> return (message.data != null)
         }
         return false
     }
@@ -76,6 +78,13 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
                         GalleryMessageViewHolder::class.java,
                         R.layout.item_gallery_message,
                         this)
+                .registerContentType(
+                        Message.CONTENT_DATA,
+                        DataMessageViewHolder::class.java,
+                        R.layout.item_data_message,
+                        DataMessageViewHolder::class.java,
+                        R.layout.item_data_message,
+                        this)
 
 
         messagesAdapter = MessagesListAdapter(User.ME_ID, holders, super.imageLoader)
@@ -84,6 +93,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         messagesAdapter.addToStart(Message.botMessage("Привет"), true)
         messagesAdapter.addToStart(Message.userMessage("Привет"), true)
         messagesAdapter.addToStart(Message.gallery(), true)
+        messagesAdapter.addToStart(Message.data(), true)
 
         messagesList.setAdapter(super.messagesAdapter)
         messagesList.drawingTime

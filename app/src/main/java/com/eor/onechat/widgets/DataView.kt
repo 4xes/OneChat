@@ -1,13 +1,13 @@
-package com.eor.onechat.view
+package com.eor.onechat.widgets
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.HorizontalScrollView
+import android.widget.FrameLayout
 import com.eor.onechat.R
-import com.eor.onechat.data.model.Places
-import kotlinx.android.synthetic.main.layout_gallery.view.*
+import com.eor.onechat.data.model.Data
+import kotlinx.android.synthetic.main.layout_data.view.*
 
-class GalleryView : HorizontalScrollView {
+class DataView : FrameLayout {
     constructor(context: Context) : super(context) {
         init(context, null, 0, 0)
     }
@@ -26,12 +26,13 @@ class GalleryView : HorizontalScrollView {
     }
 
     private fun initViews(context: Context) {
-        inflate(context, R.layout.layout_gallery, this)
+        inflate(context, R.layout.layout_data, this)
     }
 
-    fun bind(places: Places) {
-        card1.bind(places.places[0])
-        card2.bind(places.places[1])
+    fun bind(data: Data) {
+        text.text = data.text
+        title.text = data.title
+        subtitle.text = data.subtitle
     }
 
 }

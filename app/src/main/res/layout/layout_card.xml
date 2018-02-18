@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_medium"
-                android:textColor="@color/chat_gallery_title"
+                android:textColor="@color/chat_text"
                 android:textSize="14sp"
                 tools:text="Name" />
 
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
-                android:textColor="@color/chat_gallery_subtitle"
+                android:textColor="@color/chat_subtitle"
                 android:textSize="12sp"
                 tools:text="Address" />
         </LinearLayout>
