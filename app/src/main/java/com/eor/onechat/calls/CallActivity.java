@@ -877,10 +877,12 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         }
       }
     });
+    Timber.d("onLocalDescription %s", sdp.type.toString());
   }
 
   @Override
   public void onIceCandidate(final IceCandidate candidate) {
+      Timber.d("onIceCandidate");
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
@@ -945,6 +947,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
 
   @Override
   public void onPeerConnectionError(final String description) {
+      Timber.d("onPeerConnectionError %s", description);
     reportError(description);
   }
 }
