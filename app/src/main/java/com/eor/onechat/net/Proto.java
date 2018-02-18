@@ -21,7 +21,8 @@ public class Proto {
         @SerializedName("direct") DIRECT,
         @SerializedName("receive")RECEIVE,
         @SerializedName("chat.getList")CHAT_GET_LIST,
-        @SerializedName("chat.sendMessage")CHAT_SEND_MESSAGE
+        @SerializedName("chat.sendMessage")CHAT_SEND_MESSAGE,
+        @SerializedName("chat.receive")CHAT_RECEIVE
      }
      public Proto(Method method, Object data) {
         this.uuid = UUID.randomUUID().toString();

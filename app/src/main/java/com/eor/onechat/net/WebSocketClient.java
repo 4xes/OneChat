@@ -8,10 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 
-import org.webrtc.IceCandidate;
-import org.webrtc.SessionDescription;
-
-import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -78,7 +74,7 @@ public class WebSocketClient extends WebSocketListener {
         JsonObject transport = parser.parse(packet).getAsJsonObject();
         Proto proto = gson.fromJson(transport, Proto.class);
         ServerResponse callback = awaitingForResponse.get(proto.uuid);
-
+        Timber.d(transport.toString());
         if (proto.data != null) {
             JsonObject dataJson = transport.getAsJsonObject("data");
             if (callback != null) {
@@ -89,6 +85,9 @@ public class WebSocketClient extends WebSocketListener {
                         listener.onDirect(dataJson);
                         break;
                     }
+                    case CHAT_RECEIVE:
+                        listener.onDirect(dataJson);
+                        break;
                 }
             }
         }

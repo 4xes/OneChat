@@ -26,6 +26,7 @@ public class Direct {
     public enum Type {
         @SerializedName("remoteSdp") SDP,
         @SerializedName("candy") CANDY,
-        @SerializedName("bye") BYE
+        @SerializedName("bye")BYE,
+        @SerializedName("message")MESSAGE
     }
 }

@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.layout_actions.*
 import timber.log.Timber
 
+
 class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView, WebSocketClient.IDirect {
 
     private lateinit var messagesList: MessagesList
@@ -30,6 +31,20 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     private var auth: Auth? = null
     private var chatId: String? = null
 
+    private var receiveMessages = ServerResponse { jsonObject ->
+        Timber.d(jsonObject?.asString)
+        val gson = Gson()
+        val message = gson.fromJson(jsonObject, Receive::class.java)
+        when (message.type) {
+            Receive.Type.TEXT -> {
+                addText(message.text)
+            }
+            Receive.Type.PLACES -> {
+                addMessagePlaces(message.places[0], message.places[1])
+            }
+
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +67,13 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
             val gson = Gson()
             val listChats = gson.fromJson(jsonObject, ListChats::class.java)
             if (listChats.chatIds != null && listChats.chatIds.isNotEmpty()) {
-                Timber.e("${listChats.chatIds}")
                 chatId = listChats.chatIds[0]
+                Timber.d("chatId is $chatId")
+                startListeningChat()
             } else {
-                Timber.e("can't get list")
+                Timber.d("can't get list")
             }
         }
-
-
 
         webSocketClient.send(Proto.Method.CHAT_GET_LIST, auth, listResponse)
 
@@ -84,6 +98,39 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
             intent.putExtra(CallActivity.EXTRA_DATA_CHANNEL_ENABLED, false)
             startActivity(intent)
         }
+
+        fab.addOnMenuItemClickListener { fab, textView, itemId ->
+            when (itemId) {
+                R.id.action_fab_balance -> {
+                    send(getString(R.string.action_fab_balance))
+                }
+                R.id.action_fab_block_card -> {
+                    send(getString(R.string.action_fab_block_card))
+                }
+                R.id.action_fab_near_atm -> {
+                    send(getString(R.string.action_fab_near_atm))
+                }
+                R.id.action_fab_credits -> {
+                    send(getString(R.string.action_fab_credits))
+                }
+                R.id.action_fab_currency -> {
+                    send(getString(R.string.action_fab_currency))
+                }
+                R.id.action_fab_history_payment -> {
+                    send(getString(R.string.action_fab_history_payment))
+                }
+                R.id.action_fab_consultation -> {
+                    send(getString(R.string.action_fab_consultation))
+                }
+                R.id.action_fab_transfer -> {
+                    send(getString(R.string.action_fab_transfer))
+                }
+            }
+        }
+    }
+
+    private fun startListeningChat() {
+        webSocketClient.send(Proto.Method.RECEIVE, auth, receiveMessages)
     }
 
     override fun onDirect(dataJson: JsonObject?) {
@@ -92,19 +139,34 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
 
     override fun onSubmit(input: CharSequence): Boolean {
+
+//        webSocketClient.send(Proto.Method.DIRECT, Direct(chatId
+//                ?: "5A88F54971ADD835DE000011", Direct.Type.MESSAGE, input.toString())) { jsonObject ->
+//            val gson = Gson()
+//            val messageSend = gson.fromJson(jsonObject, MessageSend::class.java)
+//            if (messageSend.message_id != null) {
+//                Timber.d(messageSend.message_id)
+//            } else {
+//                Timber.d("can't send message")
+//            }
+//        }
+        send(input.toString())
+        return true
+    }
+
+    fun send(message: String) {
         webSocketClient.send(Proto.Method.CHAT_SEND_MESSAGE, Message(chatId
                 ?: "5A88F54971ADD835DE000011", input.toString())) { jsonObject ->
-            Timber.e(jsonObject?.asString)
             val gson = Gson()
             val messageSend = gson.fromJson(jsonObject, MessageSend::class.java)
             if (messageSend.message_id != null) {
-                Timber.e(messageSend.message_id)
+                Timber.d(messageSend.message_id)
             } else {
-                Timber.e("can't send message")
+                Timber.d("can't send message")
             }
         }
-        messagesAdapter.addToStart(Message.userMessage(input.toString()), true)
-        return true
+        messagesAdapter.addToStart(Message.userMessage(message.trimIndent()), true)
+
     }
 
     override fun onAddAttachments() {
