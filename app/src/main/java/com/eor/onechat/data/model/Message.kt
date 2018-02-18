@@ -45,7 +45,7 @@ class Message @JvmOverloads constructor(private val id: String, private val user
 
         fun userMessage(text: String) = message(User.ME, text)
 
-        fun gallery(places: Places) = Message(Message.uniqueId(), User.BOT, places = Places.test())
+        fun gallery() = Message(Message.uniqueId(), User.BOT, places = Places.test())
 
     }
 

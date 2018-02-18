@@ -66,10 +66,6 @@
             app:inputHint="@string/hint_enter_a_message"
             app:showAttachmentButton="false" />
 
-        <com.eor.onechat.view.GalleryView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
     </RelativeLayout>
 
     <io.github.kobakei.materialfabspeeddial.FabSpeedDial

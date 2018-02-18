@@ -57,6 +57,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         return false
     }
 
+
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
 //        when (i) {
 //            0 -> messagesAdapter.addToStart(MockMessagesFabric.imageMessage, true)
@@ -82,6 +83,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         messagesAdapter.setLoadMoreListener(this)
         messagesAdapter.addToStart(Message.botMessage("Привет"), true)
         messagesAdapter.addToStart(Message.userMessage("Привет"), true)
+        messagesAdapter.addToStart(Message.gallery(), true)
 
         messagesList.setAdapter(super.messagesAdapter)
         messagesList.drawingTime

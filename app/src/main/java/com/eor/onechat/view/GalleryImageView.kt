@@ -48,7 +48,7 @@ class GalleryImageView : CardView {
                 .load(place.preview)
                 .into(preview)
         title.text = place.title
-        subtitle.text = subtitle.text
+        subtitle.text = place.subtile
     }
 
 }
