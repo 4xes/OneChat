@@ -23,11 +23,11 @@ import kotlinx.android.synthetic.main.layout_actions.*
 
 class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView {
     override fun addMessageClient(message: String) {
-        messagesAdapter.addToStart(Message.botMessage(message), true)
+        messagesAdapter.addToStart(Message.userMessage(message), true)
     }
 
     override fun addMessageBot(message: String) {
-        messagesAdapter.addToStart(Message.userMessage(message), true)
+        messagesAdapter.addToStart(Message.botMessage(message), true)
     }
 
     override fun addMessagePlaces(place1: Place, place2: Place) {
@@ -147,6 +147,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
 
     private fun testData() {
+        addMessageBot("Hello from bot")
+        addMessageClient("Hello from me")
         val place1 = Place("Сколково", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
         val place2 = Place("Митино", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
         addMessagePlaces(place1, place2)
@@ -154,6 +156,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         addText("text")
         addTitle("title")
         addSubtitle("subtitle")
+        addMessageBot("Hello again")
     }
 
 }
