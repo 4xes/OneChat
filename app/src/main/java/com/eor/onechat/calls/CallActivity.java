@@ -19,7 +19,10 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
+import com.eor.onechat.ExtendedApplication;
 import com.eor.onechat.R;
+import com.eor.onechat.net.Direct;
+import com.eor.onechat.net.Proto;
 import com.eor.onechat.net.WebSocketClient;
 
 import org.webrtc.Camera1Enumerator;
@@ -44,6 +47,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Activity for peer connection call setup, call waiting
@@ -174,7 +179,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   private static int mediaProjectionPermissionResultCode;
   // True if local view is in the fullscreen renderer.
   private boolean isSwappedFeeds;
-  private WebSocketClient webSocketClient;
+  private ExtendedApplication app;
 
   // Controls
 //  private CallFragment callFragment;
@@ -187,7 +192,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   @SuppressWarnings("deprecation")
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    webSocketClient = new WebSocketClient();
+    Timber.d("onCreate");
     Thread.setDefaultUncaughtExceptionHandler(new UnhandledExceptionHandler(this));
 
     // Set window styles for fullscreen-window size. Needs to be done before
@@ -197,6 +202,9 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_TURN_SCREEN_ON);
     getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
     setContentView(R.layout.activity_call);
+
+    app = (ExtendedApplication) getApplication();
+    app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct(app.getAuth().userId), null);
 
     if (true) return;
 

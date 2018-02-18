@@ -15,7 +15,7 @@ import timber.log.Timber
  */
 class ExtendedApplication: Application() {
 
-    private var webSocketClient: WebSocketClient? = null
+    var webSocketClient: WebSocketClient? = null
     private val authReq: Auth = Auth("sselgq66-1426-11e8-b642-0ed5f89f718b", "Serg Salnikov");
     var auth: Auth? = null
 
