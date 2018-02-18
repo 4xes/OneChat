@@ -23,7 +23,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <View
             android:id="@+id/space"
@@ -65,7 +66,9 @@
             app:inputHint="@string/hint_enter_a_message"
             app:showAttachmentButton="false" />
 
-        <include layout="@layout/layout_gallery" />
+        <com.eor.onechat.view.GalleryView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 
