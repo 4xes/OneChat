@@ -4,53 +4,23 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import com.android.kit.extensions.toast
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.calls.Permissions
 import com.eor.onechat.chat.ChatView
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.Place
 import com.eor.onechat.data.model.User
-import com.eor.onechat.holders.DataMessageViewHolder
-import com.eor.onechat.holders.GalleryMessageViewHolder
-import com.eor.onechat.holders.InTextMessageViewHolder
-import com.eor.onechat.holders.OutTextMessageViewHolder
+import com.eor.onechat.holders.*
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
+import io.reactivex.Action
 import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.layout_actions.*
 
 class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView {
-    override fun addMessageClient(message: String) {
-        messagesAdapter.addToStart(Message.userMessage(message), true)
-    }
-
-    override fun addMessageBot(message: String) {
-        messagesAdapter.addToStart(Message.botMessage(message), true)
-    }
-
-    override fun addMessagePlaces(place1: Place, place2: Place) {
-        messagesAdapter.addToStart(Message.gallery(place1, place2), true)
-    }
-
-    override fun addText(text: String) {
-        messagesAdapter.addToStart(Message.data(text, null, null), true)
-    }
-
-    override fun addTitle(text: String) {
-        messagesAdapter.addToStart(Message.data(null, text, null), true)
-    }
-
-    override fun addSubtitle(text: String) {
-        messagesAdapter.addToStart(Message.data(null, null, text), true)
-    }
-
-    override fun addData(text: String?, title: String?, subtitle: String?) {
-        messagesAdapter.addToStart(Message.data(text, title, subtitle), true)
-    }
-
-
     private lateinit var messagesList: MessagesList
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +73,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         when (type) {
             Message.CONTENT_PLACES -> return (message.places != null)
             Message.CONTENT_DATA -> return (message.data != null)
+            Message.CONTENT_ACTIONS -> return (message.actions != null)
         }
         return false
     }
@@ -133,6 +104,13 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
                         DataMessageViewHolder::class.java,
                         R.layout.item_data_message,
                         this)
+                .registerContentType(
+                        Message.CONTENT_ACTIONS,
+                        ActionsMessageViewHolder::class.java,
+                        R.layout.item_actions_message,
+                        ActionsMessageViewHolder::class.java,
+                        R.layout.item_actions_message,
+                        this)
 
 
         messagesAdapter = MessagesListAdapter(User.ME_ID, holders, super.imageLoader)
@@ -157,6 +135,45 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         addTitle("title")
         addSubtitle("subtitle")
         addMessageBot("Hello again")
+        addActions("test", {
+            toast("test")
+        })
+        addActions("ok", {
+            toast("ok")
+        }, "no", {
+            toast("no")
+        })
     }
 
+    override fun addMessageClient(message: String) {
+        messagesAdapter.addToStart(Message.userMessage(message), true)
+    }
+
+    override fun addMessageBot(message: String) {
+        messagesAdapter.addToStart(Message.botMessage(message), true)
+    }
+
+    override fun addMessagePlaces(place1: Place, place2: Place) {
+        messagesAdapter.addToStart(Message.gallery(place1, place2), true)
+    }
+
+    override fun addText(text: String) {
+        messagesAdapter.addToStart(Message.data(text, null, null), true)
+    }
+
+    override fun addTitle(text: String) {
+        messagesAdapter.addToStart(Message.data(null, text, null), true)
+    }
+
+    override fun addSubtitle(text: String) {
+        messagesAdapter.addToStart(Message.data(null, null, text), true)
+    }
+
+    override fun addData(text: String?, title: String?, subtitle: String?) {
+        messagesAdapter.addToStart(Message.data(text, title, subtitle), true)
+    }
+
+    override fun addActions(text: String, action: Action?, text2: String?, action2: Action?) {
+        messagesAdapter.addToStart(Message.actions(text, action, text2, action2), true)
+    }
 }
