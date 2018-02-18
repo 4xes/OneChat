@@ -65,6 +65,8 @@
             app:inputHint="@string/hint_enter_a_message"
             app:showAttachmentButton="false" />
 
+        <include layout="@layout/layout_gallery" />
+
     </RelativeLayout>
 
     <io.github.kobakei.materialfabspeeddial.FabSpeedDial

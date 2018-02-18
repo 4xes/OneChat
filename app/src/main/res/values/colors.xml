@@ -20,9 +20,12 @@
 
 
     <color name="chat_background">#F6F6F6</color>
-    <color name="chat_text">#0000008C</color>
+    <color name="chat_text">#8C000000</color>
     <color name="chat_main">#299D2E</color>
-    <color name="chat_message_text">@android:color/black</color>
+    <color name="chat_message_text">#D9000000</color>
+    <color name="chat_gallery_title">#D9000000</color>
+    <color name="chat_gallery_subtitle">#8C000000</color>
+    <color name="chat_gallery_holder">#F6F5F3</color>
     <!--<color name="chat_message_text">#000000D9</color>-->
 
 </resources>
