@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import com.eor.onechat.calls.CallActivity
+import com.eor.onechat.calls.Permissions
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.GalleryMessageViewHolder
@@ -24,6 +25,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Permissions.requestMultiplePermissions(this, false)
         setContentView(R.layout.activity_messages)
         setSupportActionBar(toolbar)
 
@@ -35,7 +37,24 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         input.setAttachmentsListener(this)
 
         action_call.setOnClickListener {
-            startActivity(Intent(this, CallActivity::class.java))
+            var intent = Intent(this, CallActivity::class.java)
+            intent.putExtra(CallActivity.EXTRA_LOOPBACK, false)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_CALL, true)
+            intent.putExtra(CallActivity.EXTRA_SCREENCAPTURE, false)
+            intent.putExtra(CallActivity.EXTRA_CAMERA2, false)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_WIDTH, 640)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_HEIGHT, 480)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_FPS, 10)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED, false)
+            intent.putExtra(CallActivity.EXTRA_VIDEO_BITRATE, 2000)
+            intent.putExtra(CallActivity.EXTRA_VIDEOCODEC, "VP8")
+            intent.putExtra(CallActivity.EXTRA_HWCODEC_ENABLED, true)
+            intent.putExtra(CallActivity.EXTRA_CAPTURETOTEXTURE_ENABLED, false)
+            intent.putExtra(CallActivity.EXTRA_AUDIOCODEC, "OPUS")
+            intent.putExtra(CallActivity.EXTRA_TRACING, false)
+            intent.putExtra(CallActivity.EXTRA_CMDLINE, false)
+            intent.putExtra(CallActivity.EXTRA_DATA_CHANNEL_ENABLED, false)
+            startActivity(intent)
         }
     }
 

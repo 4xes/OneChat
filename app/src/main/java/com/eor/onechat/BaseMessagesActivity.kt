@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.android.kit.base.BaseActivity
 import com.android.kit.extensions.toast
+import com.eor.onechat.calls.Permissions
 import com.eor.onechat.data.model.Message
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -35,7 +36,6 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         imageLoader = ImageLoader { imageView, url -> Picasso.with(this).load(url).into(imageView) }
     }
 
