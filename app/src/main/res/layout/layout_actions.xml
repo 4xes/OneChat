@@ -19,6 +19,7 @@
     <FrameLayout style="@style/Action.Wrapper">
         <ImageView
             style="@style/Action.Icon"
+            android:id="@+id/action_call"
             app:srcCompat="@drawable/ic_call"/>
     </FrameLayout>
 

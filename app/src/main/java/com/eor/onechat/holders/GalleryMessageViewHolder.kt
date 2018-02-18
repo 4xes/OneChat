@@ -7,7 +7,7 @@ import com.eor.onechat.data.model.Message
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.utils.DateFormatter
 
-class InVoiceMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<Message>(itemView) {
+class GalleryMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<Message>(itemView) {
 
     //private val tvDuration: TextView = itemView.findViewById(R.id.duration)
     private val tvTime: TextView = itemView.findViewById(R.id.time)

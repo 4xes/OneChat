@@ -9,7 +9,7 @@ import com.eor.onechat.R
 import com.eor.onechat.data.model.Place
 import com.squareup.picasso.Picasso
 
-class GalleryImageCard : CardView {
+class GalleryImageView : CardView {
     constructor(context: Context) : super(context) {
         init(context, null, 0, 0)
     }
