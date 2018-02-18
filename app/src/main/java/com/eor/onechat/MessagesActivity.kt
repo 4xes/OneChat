@@ -3,8 +3,6 @@ package com.eor.onechat
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import com.eor.onechat.data.mock.MockData
-import com.eor.onechat.data.mock.MockMessagesFabric
 import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.InTextMessageViewHolder
@@ -34,7 +32,7 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
-        super.messagesAdapter.addToStart(Message(MockData.randomId, User.ME, input.toString()), true)
+        messagesAdapter.addToStart(Message.userMessage(input.toString()), true)
         return true
     }
 
@@ -52,10 +50,10 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
     }
 
     override fun onClick(dialogInterface: DialogInterface, i: Int) {
-        when (i) {
-            0 -> messagesAdapter.addToStart(MockMessagesFabric.imageMessage, true)
-            1 -> messagesAdapter.addToStart(MockMessagesFabric.voiceMessage, true)
-        }
+//        when (i) {
+//            0 -> messagesAdapter.addToStart(MockMessagesFabric.imageMessage, true)
+//            1 -> messagesAdapter.addToStart(MockMessagesFabric.voiceMessage, true)
+//        }
     }
 
     private fun initAdapter() {
@@ -74,6 +72,8 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         messagesAdapter = MessagesListAdapter(User.ME_ID, holders, super.imageLoader)
         messagesAdapter.enableSelectionMode(this)
         messagesAdapter.setLoadMoreListener(this)
+        messagesAdapter.addToStart(Message.botMessage("Привет"), true)
+        messagesAdapter.addToStart(Message.userMessage("Привет"), true)
 
         messagesList.setAdapter(super.messagesAdapter)
         messagesList.drawingTime

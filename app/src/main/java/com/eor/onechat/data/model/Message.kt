@@ -2,8 +2,7 @@ package com.eor.onechat.data.model
 
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.commons.models.MessageContentType
-
-import java.util.Date
+import java.util.*
 
 class Message @JvmOverloads constructor(private val id: String, private val user: User, private var text: String?, private var createdAt: Date? = Date()) : IMessage, MessageContentType.Image,
         MessageContentType {
@@ -43,6 +42,18 @@ class Message @JvmOverloads constructor(private val id: String, private val user
 
     fun setImage(image: Image) {
         this.image = image
+    }
+
+    companion object {
+
+        private fun uniqueId() = java.lang.Long.toString(UUID.randomUUID().leastSignificantBits)
+
+        fun message(user: User, text: String) = Message(uniqueId(), user, text)
+
+        fun botMessage(text: String) = message(User.BOT, text)
+
+        fun userMessage(text: String) = message(User.ME, text)
+
     }
 
 }
