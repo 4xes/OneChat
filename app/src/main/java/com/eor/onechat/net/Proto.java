@@ -13,17 +13,17 @@ public class Proto {
     @SerializedName("method") Method method;
     @SerializedName("data") Object data;
 
-    static enum Method {
+    public static enum Method {
         @SerializedName("auth") AUTH,
         @SerializedName("direct") DIRECT,
         @SerializedName("receive") RECEIVE
      }
-     Proto(Method method, Object data) {
+     public Proto(Method method, Object data) {
         this.uuid = UUID.randomUUID().toString();
         this.method = method;
         this.data = data;
      }
-    Proto(String uuid, Method method, Object data) {
+    public Proto(String uuid, Method method, Object data) {
         this.uuid = uuid;
         this.method = method;
         this.data = data;

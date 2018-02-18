@@ -1,5 +1,6 @@
 package com.eor.onechat.net;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -13,10 +14,16 @@ public class Auth {
     @SerializedName("photo") String photo;
 
     //response part
-    @SerializedName("result") transient int result;
-    @SerializedName("user_id") transient String userId;
-    Auth(String deviceId, String name) {
+    @Expose(serialize = false)
+    @SerializedName("result") public int result;
+    @Expose(serialize = false)
+    @SerializedName("user_id") public String userId;
+    public Auth(String deviceId, String name) {
         this.deviceId = deviceId;
         this.name = name;
+    }
+    public Auth(int result, String userId) {
+        this.result = result;
+        this.userId = userId;
     }
 }
