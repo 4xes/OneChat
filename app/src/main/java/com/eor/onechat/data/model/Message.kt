@@ -46,11 +46,9 @@ class Message @JvmOverloads constructor(private val id: String, private val user
 
         fun userMessage(text: String) = message(User.ME, text)
 
-        fun gallery() = Message(Message.uniqueId(), User.BOT, places = Places.test())
+        fun gallery(place1: Place, place2: Place) = Message(Message.uniqueId(), User.BOT, places = Places(listOf(place1, place2)))
 
-        fun dataFull() = Message(Message.uniqueId(), User.BOT, data = Data.full())
-
-        fun dataText() = Message(Message.uniqueId(), User.BOT, data = Data.text())
+        fun data(text: String? = null, title: String? = null, subtitle: String? = null) = Message(Message.uniqueId(), User.BOT, data = Data(text, title, subtitle))
 
     }
 

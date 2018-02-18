@@ -6,7 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.calls.Permissions
+import com.eor.onechat.chat.ChatView
 import com.eor.onechat.data.model.Message
+import com.eor.onechat.data.model.Place
 import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.DataMessageViewHolder
 import com.eor.onechat.holders.GalleryMessageViewHolder
@@ -19,7 +21,34 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.layout_actions.*
 
-class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener {
+class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView {
+    override fun addMessageClient(message: String) {
+        messagesAdapter.addToStart(Message.botMessage(message), true)
+    }
+
+    override fun addMessageBot(message: String) {
+        messagesAdapter.addToStart(Message.userMessage(message), true)
+    }
+
+    override fun addMessagePlaces(place1: Place, place2: Place) {
+        messagesAdapter.addToStart(Message.gallery(place1, place2), true)
+    }
+
+    override fun addText(text: String) {
+        messagesAdapter.addToStart(Message.data(text, null, null), true)
+    }
+
+    override fun addTitle(text: String) {
+        messagesAdapter.addToStart(Message.data(null, text, null), true)
+    }
+
+    override fun addSubtitle(text: String) {
+        messagesAdapter.addToStart(Message.data(null, null, text), true)
+    }
+
+    override fun addData(text: String?, title: String?, subtitle: String?) {
+        messagesAdapter.addToStart(Message.data(text, title, subtitle), true)
+    }
 
 
     private lateinit var messagesList: MessagesList
@@ -109,14 +138,22 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         messagesAdapter = MessagesListAdapter(User.ME_ID, holders, super.imageLoader)
         messagesAdapter.enableSelectionMode(this)
         messagesAdapter.setLoadMoreListener(this)
-        messagesAdapter.addToStart(Message.botMessage("Привет"), true)
-        messagesAdapter.addToStart(Message.userMessage("Привет"), true)
-        messagesAdapter.addToStart(Message.gallery(), true)
-        messagesAdapter.addToStart(Message.dataFull(), true)
-        messagesAdapter.addToStart(Message.dataText(), true)
+
+        testData()
 
         messagesList.setAdapter(super.messagesAdapter)
         messagesList.drawingTime
+    }
+
+
+    private fun testData() {
+        val place1 = Place("Сколково", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
+        val place2 = Place("Митино", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
+        addMessagePlaces(place1, place2)
+        addData("text", "title", "subtitle")
+        addText("text")
+        addTitle("title")
+        addSubtitle("subtitle")
     }
 
 }

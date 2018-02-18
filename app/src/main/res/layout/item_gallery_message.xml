@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.eor.onechat.widgets.GalleryView
+    <com.eor.onechat.widgets.PlacesView
         android:id="@+id/gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

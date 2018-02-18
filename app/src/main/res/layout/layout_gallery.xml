@@ -6,12 +6,12 @@
         android:orientation="horizontal"
         android:padding="@dimen/medium">
 
-        <com.eor.onechat.widgets.GalleryImageView
+        <com.eor.onechat.widgets.PlaceView
             android:id="@+id/card1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.eor.onechat.widgets.GalleryImageView
+        <com.eor.onechat.widgets.PlaceView
             android:id="@+id/card2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

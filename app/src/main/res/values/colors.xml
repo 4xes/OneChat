@@ -26,6 +26,8 @@
     <color name="chat_subtitle">#8C000000</color>
     <color name="chat_gallery_holder">#F6F5F3</color>
     <color name="chat_data_divider">#26000000</color>
+    <color name="chat_outcome">#B8E986</color>
+    <color name="chat_income">#F6F5F3</color>
     <!--<color name="chat_message_text">#000000D9</color>-->
 
 </resources>
