@@ -7,7 +7,7 @@ import com.eor.onechat.R
 import com.eor.onechat.data.model.Places
 import kotlinx.android.synthetic.main.layout_gallery.view.*
 
-class GalleryView : HorizontalScrollView {
+class PlacesView : HorizontalScrollView {
     constructor(context: Context) : super(context) {
         init(context, null, 0, 0)
     }

@@ -15,4 +15,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Button" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/green_dark</item>
+        <item name="colorButtonNormal">@color/chat_outcome</item>
+        <item name="android:textColor">@color/chat_text</item>
+    </style>
+
 </resources>

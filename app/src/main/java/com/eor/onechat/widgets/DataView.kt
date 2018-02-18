@@ -59,6 +59,7 @@ class DataView : FrameLayout {
             subtitle.visibility = View.GONE
         }
 
+        bottomWrapper.visibility = if (hasBottom) View.VISIBLE else View.GONE
         divider.visibility = if (hasTop && hasBottom) View.VISIBLE else View.GONE
     }
 

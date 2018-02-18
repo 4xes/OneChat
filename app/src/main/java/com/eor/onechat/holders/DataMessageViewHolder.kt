@@ -8,10 +8,10 @@ import com.stfalcon.chatkit.messages.MessageHolders
 
 class DataMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<Message>(itemView) {
 
-    private val data: DataView = itemView.findViewById(R.id.data)
+    private val texts: DataView = itemView.findViewById(R.id.data)
 
     override fun onBind(message: Message) {
         super.onBind(message)
-        data.bind(message.data!!)
+        texts.bind(message.data!!)
     }
 }

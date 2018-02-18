@@ -1,5 +1,6 @@
 package com.eor.onechat
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
 import android.provider.Settings
@@ -25,6 +26,7 @@ class ExtendedApplication: Application(), WebSocketClient.IDirect {
     var remoteIceCandidates = ArrayList<IceCandidate>()
     var remoteSdp: SessionDescription? = null
     var pc: PeerConnectionClient? = null
+    @SuppressLint("HardwareIds")
 
     override fun onCreate() {
         super.onCreate()
@@ -32,21 +34,18 @@ class ExtendedApplication: Application(), WebSocketClient.IDirect {
         Timber.v("onCreate")
 
         val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
-        val authReq = Auth(androidId, "Robot Androidovich");
+        val authReq = Auth(androidId, "Robot Androidovich")
 
         webSocketClient = WebSocketClient(this)
 
-        val authResponse = object: ServerResponse {
-            override fun onServerResponse(jsonObject: JsonObject?) {
-                val gson = Gson()
-                val authResponse = gson.fromJson(jsonObject, Auth::class.java)
-                if (authResponse.result == 1) {
-                    auth = authResponse
-                    Timber.d("auth succeed, userId %s", authResponse.userId)
-                } else {
-                    Timber.d("auth failed")
-                }
-
+        val authResponse = ServerResponse { jsonObject ->
+            val gson = Gson()
+            val authResponse = gson.fromJson(jsonObject, Auth::class.java)
+            if (authResponse.result == 1) {
+                auth = authResponse
+                Timber.d("auth succeed, userId %s", authResponse.userId)
+            } else {
+                Timber.d("auth failed")
             }
         }
 
