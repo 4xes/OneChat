@@ -2,25 +2,25 @@ package com.eor.onechat.calls;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
+import com.eor.onechat.ExtendedApplication;
 import com.eor.onechat.R;
-import com.eor.onechat.net.WebSocketClient;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
@@ -28,6 +28,7 @@ import org.webrtc.CameraEnumerator;
 import org.webrtc.FileVideoCapturer;
 import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
+import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon.ScalingType;
 import org.webrtc.ScreenCapturerAndroid;
@@ -42,16 +43,21 @@ import org.webrtc.VideoSink;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Activity for peer connection call setup, call waiting
  * and call view.
  */
 public class CallActivity extends Activity implements /*AppRTCClient.SignalingEvents,*/
-                                                      PeerConnectionClient.PeerConnectionEvents/*,
-                                                      CallFragment.OnCallEvents*/ {
+                                                      PeerConnectionClient.PeerConnectionEvents,
+                                                      CallFragment.OnCallEvents {
   private static final String TAG = "CallRTCClient";
 
   public static final String EXTRA_ROOMID = "com.eor.onechat.ROOMID";
@@ -174,10 +180,10 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   private static int mediaProjectionPermissionResultCode;
   // True if local view is in the fullscreen renderer.
   private boolean isSwappedFeeds;
-  private WebSocketClient webSocketClient;
+  private ExtendedApplication app;
 
   // Controls
-//  private CallFragment callFragment;
+  private CallFragment callFragment;
 //  private HudFragment hudFragment;
 //  private CpuMonitor cpuMonitor;
 
@@ -187,18 +193,21 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   @SuppressWarnings("deprecation")
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    webSocketClient = new WebSocketClient();
+    Timber.d("onCreate");
     Thread.setDefaultUncaughtExceptionHandler(new UnhandledExceptionHandler(this));
 
     // Set window styles for fullscreen-window size. Needs to be done before
     // adding content.
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
-    getWindow().addFlags(LayoutParams.FLAG_FULLSCREEN | LayoutParams.FLAG_KEEP_SCREEN_ON
+//    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().addFlags(/*LayoutParams.FLAG_FULLSCREEN |*/ LayoutParams.FLAG_KEEP_SCREEN_ON
         | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_TURN_SCREEN_ON);
     getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
     setContentView(R.layout.activity_call);
 
-    if (true) return;
+    app = (ExtendedApplication) getApplication();
+//    app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct(app.getAuth().userId), null);
+
+//    if (true) return;
 
     iceConnected = false;
 //    signalingParameters = null;
@@ -206,16 +215,16 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
     // Create UI controls.
     pipRenderer = findViewById(R.id.pip_video_view);
     fullscreenRenderer = findViewById(R.id.fullscreen_video_view);
-//    callFragment = new CallFragment();
+    callFragment = new CallFragment();
 //    hudFragment = new HudFragment();
 
     // Show/hide call control fragment on view click.
-//    View.OnClickListener listener = new View.OnClickListener() {
-//      @Override
-//      public void onClick(View view) {
-//        toggleCallControlFragmentVisibility();
-//      }
-//    };
+    View.OnClickListener listener = new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        toggleCallControlFragmentVisibility();
+      }
+    };
 
     // Swap feeds on pip view click.
     pipRenderer.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +234,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
       }
     });
 
-//    fullscreenRenderer.setOnClickListener(listener);
+    fullscreenRenderer.setOnClickListener(listener);
     remoteRenderers.add(remoteProxyRenderer);
 
     final Intent intent = getIntent();
@@ -268,26 +277,6 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         finish();
         return;
       }
-    }
-
-    Uri roomUri = intent.getData();
-    if (roomUri == null) {
-//      logAndToast(getString(R.string.missing_url));
-      Log.e(TAG, "Didn't get any URL in intent!");
-      setResult(RESULT_CANCELED);
-      finish();
-      return;
-    }
-
-    // Get Intent parameters.
-    String roomId = intent.getStringExtra(EXTRA_ROOMID);
-    Log.d(TAG, "Room ID: " + roomId);
-    if (roomId == null || roomId.length() == 0) {
-//      logAndToast(getString(R.string.missing_url));
-      Log.e(TAG, "Incorrect room ID in intent!");
-      setResult(RESULT_CANCELED);
-      finish();
-      return;
     }
 
     boolean loopback = intent.getBooleanExtra(EXTRA_LOOPBACK, false);
@@ -350,13 +339,13 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
 //    }
 
     // Send intent arguments to fragments.
-//    callFragment.setArguments(intent.getExtras());
+    callFragment.setArguments(intent.getExtras());
 //    hudFragment.setArguments(intent.getExtras());
     // Activate call and HUD fragments and start the call.
-//    FragmentTransaction ft = getFragmentManager().beginTransaction();
-//    ft.add(R.id.call_fragment_container, callFragment);
+    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    ft.add(R.id.call_fragment_container, callFragment);
 //    ft.add(R.id.hud_fragment_container, hudFragment);
-//    ft.commit();
+    ft.commit();
 
     // For command line execution run connection for <runTimeMs> and exit.
     if (commandLineRun && runTimeMs > 0) {
@@ -514,31 +503,31 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   }
 
   // CallFragment.OnCallEvents interface implementation.
-//  @Override
+  @Override
   public void onCallHangUp() {
     disconnect();
   }
 
-//  @Override
+  @Override
   public void onCameraSwitch() {
     if (peerConnectionClient != null) {
       peerConnectionClient.switchCamera();
     }
   }
 
-//  @Override
+  @Override
   public void onVideoScalingSwitch(ScalingType scalingType) {
     fullscreenRenderer.setScalingType(scalingType);
   }
 
-//  @Override
+  @Override
   public void onCaptureFormatChange(int width, int height, int framerate) {
     if (peerConnectionClient != null) {
       peerConnectionClient.changeCaptureFormat(width, height, framerate);
     }
   }
 
-//  @Override
+  @Override
   public boolean onToggleMic() {
     if (peerConnectionClient != null) {
       micEnabled = !micEnabled;
@@ -548,23 +537,23 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   }
 
   // Helper functions.
-//  private void toggleCallControlFragmentVisibility() {
-////    if (!iceConnected || !callFragment.isAdded()) {
-////      return;
-////    }
-//    // Show/hide call control fragment
-//    callControlFragmentVisible = !callControlFragmentVisible;
-//    FragmentTransaction ft = getFragmentManager().beginTransaction();
-//    if (callControlFragmentVisible) {
-//      ft.show(callFragment);
+  private void toggleCallControlFragmentVisibility() {
+    if (!iceConnected || !callFragment.isAdded()) {
+      return;
+    }
+    // Show/hide call control fragment
+    callControlFragmentVisible = !callControlFragmentVisible;
+    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    if (callControlFragmentVisible) {
+      ft.show(callFragment);
 //      ft.show(hudFragment);
-//    } else {
-//      ft.hide(callFragment);
+    } else {
+      ft.hide(callFragment);
 //      ft.hide(hudFragment);
-//    }
-//    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//    ft.commit();
-//  }
+    }
+    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+    ft.commit();
+  }
 
   private void startCall() {
 //    if (appRtcClient == null) {
@@ -592,6 +581,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         onAudioManagerDevicesChanged(audioDevice, availableAudioDevices);
       }
     });
+    onConnectedToRoomInternal();
   }
 
   // Should be called from UI thread
@@ -740,39 +730,52 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   // -----Implementation of AppRTCClient.AppRTCSignalingEvents ---------------
   // All callbacks are invoked from websocket signaling looper thread and
   // are routed to UI thread.
-//  private void onConnectedToRoomInternal(final SignalingParameters params) {
-//    final long delta = System.currentTimeMillis() - callStartedTimeMs;
-//
+  private void onConnectedToRoomInternal(/*final SignalingParameters params*/) {
+    final long delta = System.currentTimeMillis() - callStartedTimeMs;
+    List<PeerConnection.IceServer> iceServers = new ArrayList<>();
+
 //    signalingParameters = params;
-//    logAndToast("Creating peer connection, delay=" + delta + "ms");
-//    VideoCapturer videoCapturer = null;
-//    if (peerConnectionParameters.videoCallEnabled) {
-//      videoCapturer = createVideoCapturer();
-//    }
-//    peerConnectionClient.createPeerConnection(
-//        localProxyVideoSink, remoteRenderers, videoCapturer, signalingParameters);
-//
+    logAndToast("Creating peer connection, delay=" + delta + "ms");
+    VideoCapturer videoCapturer = null;
+    if (peerConnectionParameters.videoCallEnabled) {
+      videoCapturer = createVideoCapturer();
+    }
+
+      PeerConnection.IceServer iceServer =
+              PeerConnection.IceServer.builder("stun:stun.l.google.com:19302")
+                      .setUsername("")
+                      .setPassword("")
+                      .createIceServer();
+      iceServers.add(iceServer);
+      iceServer = PeerConnection.IceServer.builder("turn:52.57.247.209:3478")
+              .setUsername("eik6aGhoap")
+              .setPassword("UaV8gi3aix")
+              .createIceServer();
+      iceServers.add(iceServer);
+      peerConnectionClient.createPeerConnection(
+        localProxyVideoSink, remoteRenderers, videoCapturer, iceServers);
+
 //    if (signalingParameters.initiator) {
-//      logAndToast("Creating OFFER...");
-//      // Create offer. Offer SDP will be sent to answering client in
-//      // PeerConnectionEvents.onLocalDescription event.
-//      peerConnectionClient.createOffer();
-//    } else {
-//      if (params.offerSdp != null) {
-//        peerConnectionClient.setRemoteDescription(params.offerSdp);
-//        logAndToast("Creating ANSWER...");
-//        // Create answer. Answer SDP will be sent to offering client in
-//        // PeerConnectionEvents.onLocalDescription event.
-//        peerConnectionClient.createAnswer();
-//      }
-//      if (params.iceCandidates != null) {
-//        // Add remote ICE candidates from room.
-//        for (IceCandidate iceCandidate : params.iceCandidates) {
-//          peerConnectionClient.addRemoteIceCandidate(iceCandidate);
-//        }
+//          logAndToast("Creating OFFER...");
+//          // Create offer. Offer SDP will be sent to answering client in
+//          // PeerConnectionEvents.onLocalDescription event.
+//          peerConnectionClient.createOffer();
+//        } else {
+//          if (params.offerSdp != null) {
+//            peerConnectionClient.setRemoteDescription(params.offerSdp);
+//            logAndToast("Creating ANSWER...");
+//            // Create answer. Answer SDP will be sent to offering client in
+//            // PeerConnectionEvents.onLocalDescription event.
+//            peerConnectionClient.createAnswer();
+//          }
+//          if (params.iceCandidates != null) {
+//            // Add remote ICE candidates from room.
+//            for (IceCandidate iceCandidate : params.iceCandidates) {
+//              peerConnectionClient.addRemoteIceCandidate(iceCandidate);
+//            }
 //      }
 //    }
-//  }
+  }
 
 //  @Override
 //  public void onConnectedToRoom(final SignalingParameters params) {

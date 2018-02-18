@@ -92,7 +92,7 @@ public class WebSocketClient extends WebSocketListener {
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         Timber.v("onOpen");
-        webSocket.close(NORMAL_CLOSURE_STATUS, "test timeout");
+//        webSocket.close(NORMAL_CLOSURE_STATUS, "test timeout");
     }
 
     @Override
