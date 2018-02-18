@@ -1,4 +1,4 @@
-package com.eor.onechat.view
+package com.eor.onechat.widgets
 
 import android.content.Context
 import android.util.AttributeSet

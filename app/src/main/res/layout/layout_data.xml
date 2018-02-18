@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/chat_text"
+                    android:padding="@dimen/medium"
+                    android:textSize="14sp"
+                    tools:text="Name" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/chat_data_divider" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:textColor="@color/chat_text"
+                    android:textSize="14sp"
+                    android:paddingTop="@dimen/medium"
+                    android:paddingLeft="@dimen/medium"
+                    android:paddingRight="@dimen/medium"
+                    tools:text="Name" />
+
+                <TextView
+                    android:id="@+id/subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto"
+                    android:textColor="@color/chat_subtitle"
+                    android:textSize="12sp"
+                    android:paddingLeft="@dimen/medium"
+                    android:paddingRight="@dimen/medium"
+                    android:paddingBottom="@dimen/medium"
+                    tools:text="Address" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</merge>

@@ -1,4 +1,4 @@
-package com.eor.onechat.view
+package com.eor.onechat.widgets
 
 import android.content.Context
 import android.support.v7.widget.CardView
@@ -48,7 +48,7 @@ class GalleryImageView : CardView {
                 .load(place.preview)
                 .into(preview)
         title.text = place.title
-        subtitle.text = subtitle.text
+        subtitle.text = place.subtile
     }
 
 }

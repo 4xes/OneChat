@@ -4,7 +4,7 @@ import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.util.*
 
-class Message @JvmOverloads constructor(private val id: String, private val user: User, private var text: String? = "", private var createdAt: Date? = Date(), var places: Places? = null) : IMessage, MessageContentType.Image,
+class Message @JvmOverloads constructor(private val id: String, private val user: User, private var text: String? = "", private var createdAt: Date? = Date(), var places: Places? = null, var data: Data? = null) : IMessage, MessageContentType.Image,
         MessageContentType {
 
     private var image: Image? = null
@@ -36,6 +36,7 @@ class Message @JvmOverloads constructor(private val id: String, private val user
     companion object {
 
         const val CONTENT_PLACES: Byte = 1
+        const val CONTENT_DATA: Byte = 2
 
         private fun uniqueId() = java.lang.Long.toString(UUID.randomUUID().leastSignificantBits)
 
@@ -45,7 +46,11 @@ class Message @JvmOverloads constructor(private val id: String, private val user
 
         fun userMessage(text: String) = message(User.ME, text)
 
-        fun gallery(places: Places) = Message(Message.uniqueId(), User.BOT, places = Places.test())
+        fun gallery() = Message(Message.uniqueId(), User.BOT, places = Places.test())
+
+        fun dataFull() = Message(Message.uniqueId(), User.BOT, data = Data.full())
+
+        fun dataText() = Message(Message.uniqueId(), User.BOT, data = Data.text())
 
     }
 
