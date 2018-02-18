@@ -1,6 +1,7 @@
 package com.eor.onechat
 
 import android.app.Application
+import android.provider.Settings
 import com.eor.onechat.net.Auth
 import com.eor.onechat.net.Proto
 import com.eor.onechat.net.ServerResponse
@@ -15,14 +16,18 @@ import timber.log.Timber
  */
 class ExtendedApplication: Application() {
 
-    var webSocketClient: WebSocketClient? = null
-    private val authReq: Auth = Auth("sselgq66-1426-11e8-b642-0ed5f89f718b", "Serg Salnikov");
+    private var webSocketClient: WebSocketClient? = null
+
     var auth: Auth? = null
 
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
         Timber.v("onCreate")
+
+        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        val authReq = Auth(androidId, "Robot Androidovich");
+
         webSocketClient = WebSocketClient()
 
         val authResponse = object: ServerResponse {
