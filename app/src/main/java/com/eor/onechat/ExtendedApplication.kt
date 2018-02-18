@@ -17,6 +17,7 @@ class ExtendedApplication: Application() {
 
     private var webSocketClient: WebSocketClient? = null
     private val authReq: Auth = Auth("sselgq66-1426-11e8-b642-0ed5f89f718b", "Serg Salnikov");
+    var auth: Auth? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -27,12 +28,14 @@ class ExtendedApplication: Application() {
         val authResponse = object: ServerResponse {
             override fun onServerResponse(jsonObject: JsonObject?) {
                 val gson = Gson()
-                val auth = gson.fromJson(jsonObject, Auth::class.java)
-                if (auth.result == 1) {
-                    Timber.d("auth succeed, userId %s", auth.userId)
+                val authResponse = gson.fromJson(jsonObject, Auth::class.java)
+                if (authResponse.result == 1) {
+                    auth = authResponse
+                    Timber.d("auth succeed, userId %s", authResponse.userId)
                 } else {
                     Timber.d("auth failed")
                 }
+
             }
         }
 
