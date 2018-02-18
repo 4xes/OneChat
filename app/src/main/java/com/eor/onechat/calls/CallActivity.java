@@ -283,10 +283,10 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
       }
     }
 
-      peerId = "5A88D64D71ADD835DE00000C"; // caller - demo app device userId
+    peerId = "5A88F54971ADD835DE00000F"; // caller - demo app device userId
     if (intent.getAction() != null && intent.getAction().equals("OFFER")) {
         initiator = true;
-        peerId = "5A89105271ADD835DE000012"; // callee - support side userId
+      peerId = "5A88D64D71ADD835DE00000C"; // callee - support side userId
     }
 
     boolean loopback = intent.getBooleanExtra(EXTRA_LOOPBACK, false);

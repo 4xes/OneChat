@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import com.android.kit.extensions.toast
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.calls.Permissions
 import com.eor.onechat.chat.ChatView
@@ -126,24 +125,24 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
 
 
     private fun testData() {
-        addMessageBot("Hello from bot")
-        addMessageClient("Hello from me")
-        val place1 = Place("Сколково", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
-        val place2 = Place("Митино", "Большой бульвар 42с1", "http://news.sfu-kras.ru/files/images/480-skolkovo.jpg")
-        addMessagePlaces(place1, place2)
-        addData("text", "title", "subtitle")
-        addText("text")
-        addTitle("title")
-        addSubtitle("subtitle")
-        addMessageBot("Hello again")
-        addActions("test", {
-            toast("test")
-        })
-        addActions("ok", {
-            toast("ok")
-        }, "no", {
-            toast("no")
-        })
+//        addMessageBot("Hello from bot")
+//        addMessageClient("Hello from me")
+//        val place1 = Place("Сбербанк России", "Вокзальная ул. 2", "https://avatars.mds.yandex.net/get-altay/235931/2a0000015c53448a7d5e93089463748c763d/XXL")
+//        val place2 = Place("Сбербанк России", "Можайское ш. 71В", "https://avatars.mds.yandex.net/get-altay/367512/2a0000015b3bada2607128874b1f2ba3c79b/XXL")
+//        addMessagePlaces(place1, place2)
+//        addData("text", "title", "subtitle")
+//        addText("text")
+//        addTitle("title")
+//        addSubtitle("subtitle")
+//        addMessageBot("Hello again")
+//        addActions("test", {
+//            toast("test")
+//        })
+//        addActions("ok", {
+//            toast("ok")
+//        }, "no", {
+//            toast("no")
+//        })
     }
 
     override fun addMessageClient(message: String) {
