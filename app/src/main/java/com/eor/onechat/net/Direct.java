@@ -13,8 +13,8 @@ public class Direct {
     @Expose(serialize = false)
     @SerializedName("from") String from;
 
-    @SerializedName("payload") Object payload;
-    @SerializedName("type") Type type;
+    @SerializedName("payload") public Object payload;
+    @SerializedName("type") public Type type;
     public Direct(String to) {
         this.to = to;
     }

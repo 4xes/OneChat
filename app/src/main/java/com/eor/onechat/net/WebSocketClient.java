@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 import org.webrtc.IceCandidate;
 import org.webrtc.SessionDescription;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,6 +63,7 @@ public class WebSocketClient extends WebSocketListener {
     private Auth authRes = null;
     private WebSocket webSocket = null;
     private ConcurrentHashMap<String, ServerResponse> awaitingForResponse = new ConcurrentHashMap();
+    private IDirect listener = null;
 
     public void send(Proto.Method method, Object object, ServerResponse callback) {
         String uuid = UUID.randomUUID().toString();
@@ -84,22 +86,7 @@ public class WebSocketClient extends WebSocketListener {
             } else {
                 switch (proto.method) {
                     case RECEIVE: {
-                        Direct direct = gson.fromJson(dataJson, Direct.class);
-                        switch (direct.type) {
-                            case SDP:{
-                                SessionDescription sdp = gson.fromJson(dataJson.getAsJsonObject("payload"), SessionDescription.class);
-                                Timber.d("SDP %s %s", sdp.type.toString(), sdp.description);
-                                break;
-                            }
-                            case CANDY:{
-                                IceCandidate candidate = gson.fromJson(dataJson.getAsJsonObject("payload"), IceCandidate.class);
-                                Timber.d("CANDI %s %s", candidate.sdpMid, candidate.sdp);
-                                break;
-                            }
-                            case BYE:{
-                                break;
-                            }
-                        }
+                        listener.onDirect(dataJson);
                         break;
                     }
                 }
@@ -108,7 +95,12 @@ public class WebSocketClient extends WebSocketListener {
         Timber.d("received %s %s", proto.uuid, packet);
     }
 
-    public WebSocketClient() {
+    public interface IDirect {
+        void onDirect(JsonObject dataJson);
+    }
+
+    public WebSocketClient(IDirect listener) {
+        this.listener = listener;
         Timber.v("constructor");
         okHttpClient = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
