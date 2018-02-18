@@ -23,20 +23,28 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/chat_background">
-
-        <com.stfalcon.chatkit.messages.MessagesList
-            android:id="@+id/messagesList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/actions" />
-
+        android:background="@android:color/white">
 
         <View
             android:id="@+id/space"
             android:layout_above="@+id/actions"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/normal" />
+            android:layout_height="@dimen/normal"
+            android:background="@drawable/action_shadow" />
+
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:id="@+id/messagesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:incomingTextColor="@color/chat_message_text"
+            app:outcomingTextColor="@color/chat_message_text"
+            android:background="@color/transparent"
+            app:outcomingDefaultBubbleColor="#B8E986"
+            app:incomingDefaultBubbleColor="#F6F5F3"
+            app:dateHeaderTextColor="@color/transparent"
+            android:paddingBottom="@dimen/normal"
+            android:clipToPadding="false"
+            android:layout_above="@+id/actions" />
 
         <include
             android:id="@+id/actions"

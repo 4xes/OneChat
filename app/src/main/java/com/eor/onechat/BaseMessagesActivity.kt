@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import com.android.kit.base.BaseActivity
 import com.android.kit.extensions.toast
-import com.eor.onechat.data.mock.MockMessagesFabric
 import com.eor.onechat.data.model.Message
 import com.squareup.picasso.Picasso
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -15,13 +14,12 @@ import java.util.*
 
 abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.SelectionListener, MessagesListAdapter.OnLoadMoreListener {
 
-    protected val senderId = "0"
     protected lateinit var imageLoader: ImageLoader
     protected lateinit var messagesAdapter: MessagesListAdapter<Message>
 
     private var menu: Menu? = null
     private var selectionCount: Int = 0
-    private var lastLoadedDate: Date? = null
+//    private var lastLoadedDate: Date? = null
 
     private val messageStringFormatter: MessagesListAdapter.Formatter<Message>
         get() = MessagesListAdapter.Formatter { message ->
@@ -41,10 +39,6 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
         imageLoader = ImageLoader { imageView, url -> Picasso.with(this).load(url).into(imageView) }
     }
 
-    override fun onStart() {
-        super.onStart()
-        messagesAdapter!!.addToStart(MockMessagesFabric.textMessage, true)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         this.menu = menu
@@ -55,9 +49,9 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_delete -> messagesAdapter!!.deleteSelectedMessages()
+            R.id.action_delete -> messagesAdapter.deleteSelectedMessages()
             R.id.action_copy -> {
-                messagesAdapter!!.copySelectedMessagesText(this, messageStringFormatter, true)
+                messagesAdapter.copySelectedMessagesText(this, messageStringFormatter, true)
                 toast(R.string.copied_message)
             }
         }
@@ -85,9 +79,9 @@ abstract class BaseMessagesActivity : BaseActivity(), MessagesListAdapter.Select
     }
 
     private fun loadMessages() {
-        val messages = MockMessagesFabric.getMessages(lastLoadedDate)
-        lastLoadedDate = messages[messages.size - 1].createdAt
-        messagesAdapter.addToEnd(messages, false)
+//        val messages = MockMessagesFabric.getMessages(lastLoadedDate)
+//        lastLoadedDate = messages[messages.size - 1].createdAt
+//        messagesAdapter.addToEnd(messages, false)
     }
 
     companion object {
