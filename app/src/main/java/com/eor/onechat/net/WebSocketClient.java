@@ -8,6 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
 
+import org.webrtc.IceCandidate;
+import org.webrtc.SessionDescription;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,16 +87,19 @@ public class WebSocketClient extends WebSocketListener {
                         Direct direct = gson.fromJson(dataJson, Direct.class);
                         switch (direct.type) {
                             case SDP:{
+                                SessionDescription sdp = gson.fromJson(dataJson.getAsJsonObject("payload"), SessionDescription.class);
+                                Timber.d("SDP %s %s", sdp.type.toString(), sdp.description);
                                 break;
                             }
                             case CANDY:{
+                                IceCandidate candidate = gson.fromJson(dataJson.getAsJsonObject("payload"), IceCandidate.class);
+                                Timber.d("CANDI %s %s", candidate.sdpMid, candidate.sdp);
                                 break;
                             }
                             case BYE:{
                                 break;
                             }
                         }
-                        Timber.d("got DIRECT %s", direct.type.toString());
                         break;
                     }
                 }
