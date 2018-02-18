@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import com.eor.onechat.calls.CallActivity
 import com.eor.onechat.calls.Permissions
 import com.eor.onechat.chat.ChatView
@@ -11,6 +13,12 @@ import com.eor.onechat.data.model.Message
 import com.eor.onechat.data.model.Place
 import com.eor.onechat.data.model.User
 import com.eor.onechat.holders.*
+import com.eor.onechat.net.Auth
+import com.eor.onechat.net.Proto
+import com.eor.onechat.net.ServerResponse
+import com.eor.onechat.net.WebSocketClient
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageInput
 import com.stfalcon.chatkit.messages.MessagesList
@@ -18,9 +26,13 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import io.reactivex.Action
 import kotlinx.android.synthetic.main.activity_messages.*
 import kotlinx.android.synthetic.main.layout_actions.*
+import timber.log.Timber
 
-class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView {
+class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, MessageInput.AttachmentsListener, MessageHolders.ContentChecker<Message>, DialogInterface.OnClickListener, ChatView, WebSocketClient.IDirect {
+
     private lateinit var messagesList: MessagesList
+    private lateinit var webSocketClient: WebSocketClient
+    private var auth: Auth? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +46,24 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
         val input = findViewById<MessageInput>(R.id.input)
         input.setInputListener(this)
         input.setAttachmentsListener(this)
+
+        webSocketClient = WebSocketClient(this)
+
+        val authResponse = ServerResponse { jsonObject ->
+            val gson = Gson()
+            val authResponse = gson.fromJson(jsonObject, Auth::class.java)
+            if (authResponse.result == 1) {
+                auth = authResponse
+                Timber.d("auth succeed, userId %s", authResponse.userId)
+            } else {
+                Timber.d("auth failed")
+            }
+        }
+
+        val androidId = Settings.Secure.getString(this.contentResolver, Settings.Secure.ANDROID_ID)
+        val authReq = Auth(androidId, "Robot Androidovich")
+
+        webSocketClient.send(Proto.Method.AUTH, authReq, authResponse)
 
         action_call.setOnClickListener {
             var intent = Intent(this, CallActivity::class.java)
@@ -56,6 +86,10 @@ class MessagesActivity : BaseMessagesActivity(), MessageInput.InputListener, Mes
             intent.putExtra(CallActivity.EXTRA_DATA_CHANNEL_ENABLED, false)
             startActivity(intent)
         }
+    }
+
+    override fun onDirect(dataJson: JsonObject?) {
+        Log.d("TAG", dataJson?.asString ?: "")
     }
 
     override fun onSubmit(input: CharSequence): Boolean {
