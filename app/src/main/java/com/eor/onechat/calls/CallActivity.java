@@ -20,6 +20,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
 import com.eor.onechat.R;
+import com.eor.onechat.net.WebSocketClient;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
@@ -173,6 +174,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   private static int mediaProjectionPermissionResultCode;
   // True if local view is in the fullscreen renderer.
   private boolean isSwappedFeeds;
+  private WebSocketClient webSocketClient;
 
   // Controls
 //  private CallFragment callFragment;
@@ -185,6 +187,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   @SuppressWarnings("deprecation")
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    webSocketClient = new WebSocketClient();
     Thread.setDefaultUncaughtExceptionHandler(new UnhandledExceptionHandler(this));
 
     // Set window styles for fullscreen-window size. Needs to be done before
@@ -194,6 +197,8 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         | LayoutParams.FLAG_SHOW_WHEN_LOCKED | LayoutParams.FLAG_TURN_SCREEN_ON);
     getWindow().getDecorView().setSystemUiVisibility(getSystemUiVisibility());
     setContentView(R.layout.activity_call);
+
+    if (true) return;
 
     iceConnected = false;
 //    signalingParameters = null;
