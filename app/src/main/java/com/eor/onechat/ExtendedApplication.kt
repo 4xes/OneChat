@@ -4,10 +4,10 @@ import android.app.Application
 import android.content.Intent
 import android.provider.Settings
 import com.eor.onechat.calls.CallActivity
+import com.eor.onechat.calls.PeerConnectionClient
 import com.eor.onechat.net.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import org.json.JSONObject
 import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
 import timber.log.Timber
@@ -23,7 +23,8 @@ class ExtendedApplication: Application(), WebSocketClient.IDirect {
     var auth: Auth? = null
 
     var remoteIceCandidates = ArrayList<IceCandidate>()
-    var sdp: SessionDescription? = null
+    var remoteSdp: SessionDescription? = null
+    var pc: PeerConnectionClient? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -59,19 +60,27 @@ class ExtendedApplication: Application(), WebSocketClient.IDirect {
             Direct.Type.SDP -> {
                 val sdp = gson.fromJson(dataJson?.getAsJsonObject("payload"), SessionDescription::class.java)
                 Timber.d("SDP %s %s", sdp.type.toString(), sdp.description)
-                this.sdp = sdp
+                this.remoteSdp = sdp
                 if (sdp.type == SessionDescription.Type.OFFER) {
                     var intent = Intent(this, CallActivity::class.java)
                     startActivity(intent)
+                }
+                if (sdp.type == SessionDescription.Type.ANSWER && pc != null) {
+                    pc?.setRemoteDescription(sdp)
                 }
             }
             Direct.Type.CANDY -> {
                 val candidate = gson.fromJson(dataJson?.getAsJsonObject("payload"), IceCandidate::class.java)
                 Timber.d("CANDI %s %s", candidate.sdpMid, candidate.sdp)
                 remoteIceCandidates.add(candidate)
+                pc?.addRemoteIceCandidate(candidate)
             }
             Direct.Type.BYE -> {
             }
         }
+    }
+
+    fun setPC(peerConnectionClient: PeerConnectionClient) {
+        this.pc = peerConnectionClient
     }
 }

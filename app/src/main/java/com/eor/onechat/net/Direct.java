@@ -11,7 +11,7 @@ public class Direct {
     @Expose(deserialize = false)
     @SerializedName("to") String to;
     @Expose(serialize = false)
-    @SerializedName("from") String from;
+    @SerializedName("from") public String from;
 
     @SerializedName("payload") public Object payload;
     @SerializedName("type") public Type type;
@@ -24,7 +24,7 @@ public class Direct {
         this.payload = payload;
     }
     public enum Type {
-        @SerializedName("sdp") SDP,
+        @SerializedName("remoteSdp") SDP,
         @SerializedName("candy") CANDY,
         @SerializedName("bye") BYE
     }

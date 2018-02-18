@@ -11,7 +11,6 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -47,10 +46,7 @@ import org.webrtc.VideoSink;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -191,6 +187,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   private boolean isSwappedFeeds;
   private ExtendedApplication app;
   private Boolean initiator = false;
+  private String peerId = null;
 
   // Controls
   private CallFragment callFragment;
@@ -215,9 +212,6 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
     setContentView(R.layout.activity_call);
 
     app = (ExtendedApplication) getApplication();
-//    app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct(app.getAuth().userId), null);
-
-//    if (true) return;
 
     iceConnected = false;
 //    signalingParameters = null;
@@ -289,8 +283,10 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
       }
     }
 
+      peerId = "5A88D64D71ADD835DE00000C";
     if (intent.getAction() != null && intent.getAction().equals("OFFER")) {
         initiator = true;
+        peerId = "5A89105271ADD835DE000012";
     }
 
     boolean loopback = intent.getBooleanExtra(EXTRA_LOOPBACK, false);
@@ -770,25 +766,19 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
         localProxyVideoSink, remoteRenderers, videoCapturer, iceServers);
 
     if (initiator) {
-          logAndToast("Creating OFFER...");
-          // Create offer. Offer SDP will be sent to answering client in
-          // PeerConnectionEvents.onLocalDescription event.
-          peerConnectionClient.createOffer();
-        } /*else {
-          if (params.offerSdp != null) {
-            peerConnectionClient.setRemoteDescription(params.offerSdp);
-            logAndToast("Creating ANSWER...");
-            // Create answer. Answer SDP will be sent to offering client in
-            // PeerConnectionEvents.onLocalDescription event.
-            peerConnectionClient.createAnswer();
-          }
-          if (params.iceCandidates != null) {
-            // Add remote ICE candidates from room.
-            for (IceCandidate iceCandidate : params.iceCandidates) {
-              peerConnectionClient.addRemoteIceCandidate(iceCandidate);
-            }
-      }
-    }*/
+        logAndToast("Creating OFFER...");
+        // Create offer. Offer SDP will be sent to answering client in
+        // PeerConnectionEvents.onLocalDescription event.
+        peerConnectionClient.createOffer();
+        app.setPc(peerConnectionClient);
+    } else {
+        peerConnectionClient.setRemoteDescription(app.getRemoteSdp());
+        peerConnectionClient.createAnswer();
+        for (IceCandidate candidate : app.getRemoteIceCandidates()) {
+            peerConnectionClient.addRemoteIceCandidate(candidate);
+        }
+        app.getRemoteIceCandidates().clear();
+    }
   }
 
 //  @Override
@@ -802,7 +792,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
 //  }
 
 //  @Override
-//  public void onRemoteDescription(final SessionDescription sdp) {
+//  public void onRemoteDescription(final SessionDescription remoteSdp) {
 //    final long delta = System.currentTimeMillis() - callStartedTimeMs;
 //    runOnUiThread(new Runnable() {
 //      @Override
@@ -811,8 +801,8 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
 //          Log.e(TAG, "Received remote SDP for non-initilized peer connection.");
 //          return;
 //        }
-//        logAndToast("Received remote " + sdp.type + ", delay=" + delta + "ms");
-//        peerConnectionClient.setRemoteDescription(sdp);
+//        logAndToast("Received remote " + remoteSdp.type + ", delay=" + delta + "ms");
+//        peerConnectionClient.setRemoteDescription(remoteSdp);
 //        if (!signalingParameters.initiator) {
 //          logAndToast("Creating ANSWER...");
 //          // Create answer. Answer SDP will be sent to offering client in
@@ -874,20 +864,16 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   @Override
   public void onLocalDescription(final SessionDescription sdp) {
     final long delta = System.currentTimeMillis() - callStartedTimeMs;
-      if (initiator) {
-          app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct("5A89105271ADD835DE000012", Direct.Type.SDP,sdp), this);
-      } else {
-          app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct("5A88D64D71ADD835DE00000C", Direct.Type.SDP,sdp), this);
-      }
+      app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct(peerId, Direct.Type.SDP,sdp), this);
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
 //        if (app.getWebSocketClient() != null) {
-//          logAndToast("Sending " + sdp.type + ", delay=" + delta + "ms");
+//          logAndToast("Sending " + remoteSdp.type + ", delay=" + delta + "ms");
 //          if (initiator) {
-////            app.getWebSocketClient().send(Proto.Method.DIRECT, sdp, this);
+////            app.getWebSocketClient().send(Proto.Method.DIRECT, remoteSdp, this);
 //          } else {
-////            app.getWebSocketClient().send(Proto.Method.DIRECT, sdp, this);
+////            app.getWebSocketClient().send(Proto.Method.DIRECT, remoteSdp, this);
 //          }
 //        }
         if (peerConnectionParameters.videoMaxBitrate > 0) {
@@ -902,7 +888,7 @@ public class CallActivity extends Activity implements /*AppRTCClient.SignalingEv
   @Override
   public void onIceCandidate(final IceCandidate candidate) {
       Timber.d("onIceCandidate");
-      app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct("5A89105271ADD835DE000012", Direct.Type.CANDY,candidate), this);
+      app.getWebSocketClient().send(Proto.Method.DIRECT, new Direct(peerId, Direct.Type.CANDY,candidate), this);
 
 //    runOnUiThread(new Runnable() {
 //      @Override
